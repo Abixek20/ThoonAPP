@@ -12,6 +12,12 @@ import 'admin_dashboard_screen.dart';
 import 'notifications_screen.dart';
 import 'building_enquiry_screen.dart';
 import '../components/push_notification_overlay.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+String get currentUserName =>
+    FirebaseAuth.instance.currentUser?.displayName ?? 'User';
+String? get currentUserPhoto =>
+    FirebaseAuth.instance.currentUser?.photoURL;
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -231,8 +237,8 @@ class _HomeViewState extends State<HomeView> {
                           shape: BoxShape.circle,
                           border: Border.all(
                               color: ThoonTheme.goldPrimary, width: 2),
-                          image: const DecorationImage(
-                            image: NetworkImage(
+                          image:  DecorationImage(
+                            image: NetworkImage(currentUserPhoto ??
                                 'https://i.pravatar.cc/150?img=33'),
                             fit: BoxFit.cover,
                           ),
@@ -251,7 +257,7 @@ class _HomeViewState extends State<HomeView> {
                           ),
                         ),
                         Text(
-                          'Jonathan Davies',
+                          currentUserName,
                           style: GoogleFonts.outfit(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -359,7 +365,7 @@ class _HomeViewState extends State<HomeView> {
 
           // ── Promotional Banners Slider ───────────────────────────────────
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 15.0),
             child: GestureDetector(
               onHorizontalDragEnd: (details) {
                 if (details.primaryVelocity! < 0) {

@@ -1,0 +1,48 @@
+
+{
+  "project_info": {
+    "project_number": "187872059662",
+    "project_id": "thoonapp-bc99b",
+    "storage_bucket": "thoonapp-bc99b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:187872059662:android:05ac2f715719220a82f75f",
+        "android_client_info": {
+          "package_name": "com.inotech.thoonapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "187872059662-457684dckb5972qji13o0c1cqgpm9vjp.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.inotech.thoonapp",
+            "certificate_hash": "6c70142e1a1ef4c9cd13319e1089791a7d25bd0d"
+          }
+        },
+        {
+          "client_id": "187872059662-19fj37cphb2bbr02b65l95c2njmjobnf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAPXK3dpSgsCCqe1SprX7ZCQ1XSdpyFU00"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "187872059662-19fj37cphb2bbr02b65l95c2njmjobnf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

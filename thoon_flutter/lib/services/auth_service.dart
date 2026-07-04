@@ -1,5 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // THOON – ASP.NET Core JWT Auth Service
@@ -9,6 +11,9 @@ class AuthService {
   static final AuthService _instance = AuthService._internal();
   factory AuthService() => _instance;
   AuthService._internal();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final GoogleSignIn _googleSignIn = GoogleSignIn();
+
 
   String? _currentUserId;
   String? _currentPhone;
@@ -78,13 +83,36 @@ class AuthService {
 
   // ─── GOOGLE SIGN-IN ────────────────────────────────────────────────────────
 
-  Future<bool> signInWithGoogle() async {
-    return false; // Not supported by ASP.NET backend currently
+ Future<bool> signInWithGoogle() async {
+    try {
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      if (googleUser == null) return false; // user cancelled
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
+
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      final userCredential =
+          await _firebaseAuth.signInWithCredential(credential);
+      _currentUserId = userCredential.user?.uid;
+      return _currentUserId != null;
+    } catch (e,st) {
+       print('SIGNIN ERROR: $e');
+    print('SIGNIN ERROR TYPE: ${e.runtimeType}');
+    print('SIGNIN STACK: $st');
+      return false;
+    }
   }
 
   // ─── SIGN OUT ──────────────────────────────────────────────────────────────
 
   Future<void> signOut() async {
+    //await _googleSignIn.signOut();
+    //await _firebaseAuth.signOut();
     _currentUserId = null;
     _currentPhone = null;
     _jwtToken = null;
@@ -93,6 +121,8 @@ class AuthService {
   // ─── ID TOKEN ──────────────────────────────────────────────────────────────
 
   Future<String?> getIdToken() async {
+    final user = _firebaseAuth.currentUser;
+    return await user?.getIdToken();
     return _jwtToken;
   }
 }

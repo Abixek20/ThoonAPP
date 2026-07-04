@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme.dart';
 import 'dashboard_screen.dart';
+//import 'dart:io' show Platform;
+import '../services/auth_service.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -13,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _phoneController = TextEditingController();
   final TextEditingController _otpController = TextEditingController();
+  final AuthService _authService = AuthService();
   bool _isOtpSent = false;
   bool _isLoading = false;
 
@@ -76,6 +79,29 @@ class _LoginScreenState extends State<LoginScreen> {
     });
   }
 
+  Future<void> _handleGoogleSignIn() async {
+    setState(() {
+      _isLoading = true;
+    });
+    final success = await _authService.signInWithGoogle();
+    if (!mounted) return;
+    setState(() {
+      _isLoading = false;
+     // print("GOOGLE SIGN-IN SUCCESS = $success");
+    });
+    if (success) {
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const DashboardScreen()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google sign-in failed'), backgroundColor: Colors.redAccent),
+      );
+    }
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -126,7 +152,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                _isOtpSent 
+                _isOtpSent
                     ? 'செல்லுபடியாகும் 4 இலக்க OTP குறியீட்டை உள்ளிடவும்'
                     : 'உங்கள் கட்டுமான தேவைகளுக்கு உள்நுழையவும்',
                 style: GoogleFonts.notoSansTamil(
@@ -136,7 +162,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 60),
-              
+
               // Animated container sliding fields
               AnimatedCrossFade(
                 firstChild: _buildPhoneInput(),
@@ -146,11 +172,11 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
 
               const SizedBox(height: 35),
-              
+
               // Premium Gold Gradient Action Button
               GestureDetector(
-                onTap: _isLoading 
-                    ? null 
+                onTap: _isLoading
+                    ? null
                     : (_isOtpSent ? _verifyOtp : _sendOtp),
                 child: Container(
                   height: 56,
@@ -187,9 +213,53 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 28),
+
+              // OR divider
+              Row(
+                children: [
+                  Expanded(child: Divider(color: Colors.white.withOpacity(0.08))),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    child: Text(
+                      'OR',
+                      style: GoogleFonts.inter(fontSize: 11, color: ThoonTheme.textMuted, letterSpacing: 1),
+                    ),
+                  ),
+                  Expanded(child: Divider(color: Colors.white.withOpacity(0.08))),
+                ],
+              ),
+              const SizedBox(height: 20),
+
+              // Continue with Google
+              GestureDetector(
+                onTap: _isLoading ? null : _handleGoogleSignIn,
+                child: Container(
+                  height: 52,
+                  decoration: BoxDecoration(
+                    color: ThoonTheme.cardBg,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.white.withOpacity(0.08)),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.g_mobiledata_rounded, color: ThoonTheme.textMain, size: 24),
+                      const SizedBox(width: 8),
+                      Text(
+                        'Continue with Google',
+                        style: GoogleFonts.inter(fontSize: 14, fontWeight: FontWeight.w600, color: ThoonTheme.textMain),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
               
+
               const Spacer(),
-              
+
               // Footer terms
               Padding(
                 padding: const EdgeInsets.only(bottom: 30),

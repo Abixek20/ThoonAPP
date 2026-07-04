@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 import 'theme.dart';
 import 'screens/splash_screen.dart';
 import 'components/push_notification_overlay.dart';
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async{
+   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+   // options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ThoonApp());
 }
 

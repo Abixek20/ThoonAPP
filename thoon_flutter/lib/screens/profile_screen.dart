@@ -4,6 +4,14 @@ import 'package:url_launcher/url_launcher.dart';
 import '../theme.dart';
 import '../utils/constants.dart';
 import 'login_screen.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
+String get currentUserName =>
+    FirebaseAuth.instance.currentUser?.displayName ?? 'User';
+String? get currentUserPhoto =>
+    FirebaseAuth.instance.currentUser?.photoURL;
+String get currentUserEmail =>
+    FirebaseAuth.instance.currentUser?.email ?? 'No email';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // THOON – Profile Screen (Enhanced)
@@ -60,8 +68,8 @@ class ProfileScreen extends StatelessWidget {
                           shape: BoxShape.circle,
                           border: Border.all(
                               color: ThoonTheme.goldPrimary, width: 2.5),
-                          image: const DecorationImage(
-                            image: NetworkImage(
+                          image:  DecorationImage(
+                            image: NetworkImage(currentUserPhoto ??
                                 'https://i.pravatar.cc/150?img=33'),
                             fit: BoxFit.cover,
                           ),
@@ -88,7 +96,7 @@ class ProfileScreen extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
                   Text(
-                    'Jonathan Davies',
+                    currentUserName,
                     style: GoogleFonts.outfit(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -96,7 +104,7 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'jonathan.davies@example.com',
+                    currentUserEmail,
                     style: GoogleFonts.inter(
                         fontSize: 12, color: ThoonTheme.textMuted),
                   ),
